@@ -36,6 +36,12 @@ object Deps {
             val lifecycle = AndroidLibrary(
                 name = "androidx.lifecycle:lifecycle-extensions:${Versions.Libs.Android.lifecycle}"
             )
+            val glide = AndroidLibrary(
+                name = "com.github.bumptech.glide:glide:${Versions.Libs.Android.glide}"
+            )
+            val glideCompiler = AndroidLibrary(
+                name = "com.github.bumptech.glide:compiler:${Versions.Libs.Android.glide}"
+            )
         }
 
         object MultiPlatform {

@@ -57,6 +57,9 @@ dependencies {
     implementation(Deps.Libs.Android.appCompat.name)
     implementation(Deps.Libs.Android.material.name)
     implementation(Deps.Libs.Android.recyclerView.name)
+    implementation(Deps.Libs.Android.glide.name)
+
+    annotationProcessor(Deps.Libs.Android.glideCompiler.name)
 
     implementation(Deps.Libs.MultiPlatform.napier.android!!)
 

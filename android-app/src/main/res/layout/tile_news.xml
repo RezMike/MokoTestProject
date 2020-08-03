@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -11,6 +13,10 @@
         <variable
             name="description"
             type="dev.icerock.moko.resources.desc.StringDesc" />
+
+        <variable
+            name="image"
+            type="String" />
     </data>
 
     <LinearLayout
@@ -24,7 +30,7 @@
             android:layout_height="wrap_content"
             android:text="@{title}"
             android:textAppearance="@android:style/TextAppearance.Material.Title"
-            tools:text="Test title"/>
+            tools:text="Test title" />
 
         <TextView
             android:layout_width="match_parent"
@@ -32,6 +38,13 @@
             android:layout_marginTop="8dp"
             android:text="@{description}"
             android:textAppearance="@android:style/TextAppearance.Material.Body1"
-            tools:text="Description with multiline\ntext for some news"/>
+            tools:text="Description with multiline\ntext for some news" />
+
+        <ImageView
+            android:layout_width="140dp"
+            android:layout_height="80dp"
+            android:layout_marginTop="10dp"
+            app:imageUrl="@{image}" />
+
     </LinearLayout>
 </layout>

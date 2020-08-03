@@ -12,11 +12,13 @@ import dev.icerock.moko.network.generated.models.Article
 data class News(
     val id: Int,
     val fullName: String?,
-    val description: String?
+    val description: String?,
+    val image: String
 ) : Parcelable
 
 internal fun Article.toDomain(): News = News(
     id = this.url.hashCode(),
     fullName = this.title,
-    description = this.description
+    description = this.description,
+    image = this.urlToImage ?: "null"
 )

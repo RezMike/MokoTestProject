@@ -45,7 +45,8 @@ class SharedFactory(
                 return newsUnitsFactory.createNewsTile(
                     id = data.id.toLong(),
                     title = data.fullName.orEmpty(),
-                    description = data.description?.desc() ?: MR.strings.no_description.desc()
+                    description = data.description?.desc() ?: MR.strings.no_description.desc(),
+                    image = data.image
                 )
             }
         }
@@ -97,7 +98,8 @@ class SharedFactory(
         fun createNewsTile(
             id: Long,
             title: String,
-            description: StringDesc
+            description: StringDesc,
+            image: String
         ): TableUnitItem
     }
 }
