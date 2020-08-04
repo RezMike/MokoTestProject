@@ -99,7 +99,7 @@ class SharedFactory(
             id: Long,
             title: String,
             description: StringDesc,
-            image: String
+            image: String?
         ): TableUnitItem
     }
 }

@@ -13,12 +13,12 @@ data class News(
     val id: Int,
     val fullName: String?,
     val description: String?,
-    val image: String
+    val image: String?
 ) : Parcelable
 
 internal fun Article.toDomain(): News = News(
     id = this.url.hashCode(),
     fullName = this.title,
     description = this.description,
-    image = this.urlToImage ?: "null"
+    image = this.urlToImage
 )
