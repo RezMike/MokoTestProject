@@ -4,6 +4,7 @@
 
 package org.example.library.feature.list.di
 
+import dev.icerock.moko.mvvm.dispatcher.EventsDispatcher
 import org.example.library.feature.list.model.ListSource
 import org.example.library.feature.list.presentation.ListViewModel
 
@@ -12,8 +13,11 @@ class ListFactory<T>(
     private val strings: ListViewModel.Strings,
     private val unitsFactory: ListViewModel.UnitsFactory<T>
 ) {
-    fun createListViewModel(): ListViewModel<T> {
+    fun createListViewModel(
+        eventsDispatcher: EventsDispatcher<ListViewModel.EventsListener>
+    ): ListViewModel<T> {
         return ListViewModel(
+            eventsDispatcher = eventsDispatcher,
             listSource = listSource,
             strings = strings,
             unitsFactory = unitsFactory

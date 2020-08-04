@@ -18,6 +18,10 @@ object Modules {
                 name = ":mpp-library:feature:list",
                 exported = true
             )
+            val article = MultiPlatformModule(
+                name = ":mpp-library:feature:article",
+                exported = true
+            )
         }
     }
 }

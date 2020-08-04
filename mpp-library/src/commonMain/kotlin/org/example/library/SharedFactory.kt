@@ -13,11 +13,15 @@ import dev.icerock.moko.resources.desc.desc
 import dev.icerock.moko.units.TableUnitItem
 import org.example.library.domain.di.DomainFactory
 import org.example.library.domain.entity.News
+import org.example.library.feature.article.di.ArticleFactory
+import org.example.library.feature.article.model.ArticleSource
+import org.example.library.feature.article.presentation.ArticleViewModel
 import org.example.library.feature.config.di.ConfigFactory
 import org.example.library.feature.config.model.ConfigStore
 import org.example.library.feature.config.presentation.ConfigViewModel
 import org.example.library.feature.list.di.ListFactory
 import org.example.library.feature.list.model.ListSource
+import org.example.library.feature.list.presentation.ArticleClickListener
 import org.example.library.feature.list.presentation.ListViewModel
 
 class SharedFactory(
@@ -29,27 +33,6 @@ class SharedFactory(
     private val domainFactory = DomainFactory(
         settings = settings,
         baseUrl = baseUrl
-    )
-
-    val newsFactory: ListFactory<News> = ListFactory(
-        listSource = object : ListSource<News> {
-            override suspend fun getList(): List<News> {
-                return domainFactory.newsRepository.getNewsList()
-            }
-        },
-        strings = object : ListViewModel.Strings {
-            override val unknownError: StringResource = MR.strings.unknown_error
-        },
-        unitsFactory = object : ListViewModel.UnitsFactory<News> {
-            override fun createTile(data: News): TableUnitItem {
-                return newsUnitsFactory.createNewsTile(
-                    id = data.id.toLong(),
-                    title = data.fullName.orEmpty(),
-                    description = data.description?.desc() ?: MR.strings.no_description.desc(),
-                    image = data.image
-                )
-            }
-        }
     )
 
     val configFactory = ConfigFactory(
@@ -90,16 +73,50 @@ class SharedFactory(
         defaultLanguage = "us"
     )
 
+    val newsFactory: ListFactory<News> = ListFactory(
+        listSource = object : ListSource<News> {
+            override suspend fun getList(): List<News> {
+                return domainFactory.newsRepository.getNewsList()
+            }
+        },
+        strings = object : ListViewModel.Strings {
+            override val unknownError: StringResource = MR.strings.unknown_error
+        },
+        unitsFactory = object : ListViewModel.UnitsFactory<News> {
+            override fun createTile(data: News, listener: ArticleClickListener): TableUnitItem {
+                return newsUnitsFactory.createNewsTile(
+                    id = data.id,
+                    title = data.fullName.orEmpty(),
+                    description = data.description?.desc() ?: MR.strings.no_description.desc(),
+                    image = data.image,
+                    listener = listener
+                )
+            }
+        }
+    )
+
+    val articleFactory = ArticleFactory(
+        articleSource = object : ArticleSource<Int, News> {
+            override suspend fun getArticle(id: Int): News? {
+                return domainFactory.newsRepository.getNews(id)
+            }
+        },
+        strings = object : ArticleViewModel.Strings {
+            override val unknownError: StringResource = MR.strings.unknown_error
+        }
+    )
+
     init {
         Napier.base(antilog)
     }
 
     interface NewsUnitsFactory {
         fun createNewsTile(
-            id: Long,
+            id: Int,
             title: String,
             description: StringDesc,
-            image: String?
+            image: String?,
+            listener: ArticleClickListener
         ): TableUnitItem
     }
 }

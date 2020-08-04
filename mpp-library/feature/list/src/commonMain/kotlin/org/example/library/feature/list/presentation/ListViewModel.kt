@@ -7,6 +7,8 @@ package org.example.library.feature.list.presentation
 import com.github.aakira.napier.Napier
 import dev.icerock.moko.mvvm.State
 import dev.icerock.moko.mvvm.asState
+import dev.icerock.moko.mvvm.dispatcher.EventsDispatcher
+import dev.icerock.moko.mvvm.dispatcher.EventsDispatcherOwner
 import dev.icerock.moko.mvvm.livedata.*
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
 import dev.icerock.moko.resources.StringResource
@@ -17,10 +19,13 @@ import kotlinx.coroutines.launch
 import org.example.library.feature.list.model.ListSource
 
 class ListViewModel<T>(
+    override val eventsDispatcher: EventsDispatcher<EventsListener>,
     private val listSource: ListSource<T>,
     private val strings: Strings,
     private val unitsFactory: UnitsFactory<T>
-) : ViewModel() {
+) : ViewModel(),
+    EventsDispatcherOwner<ListViewModel.EventsListener>,
+    ArticleClickListener {
 
     private val _state: MutableLiveData<State<List<T>, Throwable>> =
         MutableLiveData(initialValue = State.Loading())
@@ -28,16 +33,21 @@ class ListViewModel<T>(
     val state: LiveData<State<List<TableUnitItem>, StringDesc>> = _state
         .dataTransform {
             map { news ->
-                news.map { unitsFactory.createTile(it) }
+                news.map { unitsFactory.createTile(it, this@ListViewModel) }
             }
         }
         .errorTransform {
-            // new type inferrence require set types oO
+            // new type inference require set types oO
             map<Throwable, StringDesc> { it.message?.desc() ?: strings.unknownError.desc() }
         }
 
     init {
         loadList()
+    }
+
+    override fun onArticleClick(id: Int) {
+        Napier.d("SHOW $id")
+        eventsDispatcher.dispatchEvent { routeToArticle(id) }
     }
 
     fun onRetryPressed() {
@@ -73,10 +83,18 @@ class ListViewModel<T>(
     }
 
     interface UnitsFactory<T> {
-        fun createTile(data: T): TableUnitItem
+        fun createTile(data: T, listener: ArticleClickListener): TableUnitItem
     }
 
     interface Strings {
         val unknownError: StringResource
     }
+
+    interface EventsListener {
+        fun routeToArticle(id: Int)
+    }
+}
+
+interface ArticleClickListener {
+    fun onArticleClick(id: Int)
 }

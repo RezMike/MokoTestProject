@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="org.example.library.domain.entity.News"/>
+        <import type="org.example.library.feature.article.presentation.ArticleViewModel" />
+
+        <variable
+            name="viewModel"
+            type="ArticleViewModel&lt;Integer, News&gt;" />
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="description"
+            type="dev.icerock.moko.resources.desc.StringDesc" />
+
+        <variable
+            name="image"
+            type="String" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp"
+            app:visibleOrGone="@{viewModel.state.ld.isSuccess}">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@{viewModel.state.ld.dataValue.fullName}"
+                android:textAppearance="@android:style/TextAppearance.Material.Title"
+                tools:text="Test title" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@{viewModel.state.ld.dataValue.description}"
+                android:textAppearance="@android:style/TextAppearance.Material.Body1"
+                tools:text="Description with multiline\ntext for some news" />
+
+            <ImageView
+                android:layout_width="280dp"
+                android:layout_height="160dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                app:imageUrl="@{viewModel.state.ld.dataValue.image}"
+                tools:background="#03A9F4" />
+
+        </LinearLayout>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:visibleOrGone="@{viewModel.state.ld.isLoading}" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:gravity="center"
+            android:text="@string/article_not_found"
+            app:visibleOrGone="@{viewModel.state.ld.isEmpty}" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@{viewModel.state.ld.errorValue}"
+            app:visibleOrGone="@{viewModel.state.ld.isError}" />
+
+    </FrameLayout>
+</layout>

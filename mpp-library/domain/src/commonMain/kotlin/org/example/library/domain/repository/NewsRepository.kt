@@ -13,6 +13,8 @@ class NewsRepository internal constructor(
     private val newsApi: NewsApi,
     private val keyValueStorage: KeyValueStorage
 ) {
+    private val cache = mutableMapOf<Int, News>()
+
     suspend fun getNewsList(query: String? = null, page: Int = 1, pageSize: Int = 20): List<News> {
         return newsApi.topHeadlinesGet(
             country = keyValueStorage.language,
@@ -21,5 +23,12 @@ class NewsRepository internal constructor(
             page = page,
             pageSize = pageSize
         ).articles.map { it.toDomain() }
+            .also { list ->
+                cache.putAll(list.associateBy { it.id })
+            }
+    }
+
+    fun getNews(id: Int): News? {
+        return cache[id]
     }
 }
